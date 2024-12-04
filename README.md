@@ -1,9 +1,9 @@
-# n8n-queue-render (easy Queue mode)
+# n8n-queue-render (Button for Queue mode)
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
 
-### How to install n8n on render.com for free
+### How to install n8n on render.com in queue mode
 
 Follow these steps :
 
@@ -17,7 +17,4 @@ Follow these steps :
 8. Wait a minute for your instance to update
 9. Enjoy !
 
-
-This instance will be free for 90d, then you need to pay 7$/mo for the database.
-
-Created by Antoine Deschamps for La Machine. Inspired by ready4mars.
+Created by Antoine Deschamps for SalesTouch. Inspired by ready4mars.
