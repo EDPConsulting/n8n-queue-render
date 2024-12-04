@@ -1,4 +1,4 @@
-# n8n-render (easy mode)
+# n8n-queue-render (easy Queue mode)
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
