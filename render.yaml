@@ -1,0 +1,135 @@
+services:
+  - type: web
+    name: n8n
+    env: docker
+    region: frankfurt # optional (defaults to oregon)
+    plan: free # optional (defaults to starter)
+    branch: main # optional (defaults to master)
+    numInstances: 1
+    healthCheckPath: /healthz
+    envVars:
+      - key: DB_TYPE
+        value: postgresdb
+      - key: DB_POSTGRESDB_HOST
+        fromDatabase:
+          name: n8nDB
+          property: host
+      - key: DB_POSTGRESDB_DATABASE
+        fromDatabase:
+          name: n8nDB
+          property: database
+      - key: DB_POSTGRESDB_PORT
+        fromDatabase:
+          name: n8nDB
+          property: port
+      - key: DB_POSTGRESDB_USER
+        fromDatabase:
+          name: n8nDB
+          property: user
+      - key: DB_POSTGRESDB_PASSWORD
+        fromDatabase:
+          name: n8nDB
+          property: password
+      - key: PORT
+        value: 5678
+      - key: N8N_LOG_LEVEL
+        value: info
+      - key: GENERIC_TIMEZONE
+        value: Europe/Paris
+      - key: TZ
+        value: Europe/Paris
+      - key: N8N_DEFAULT_LOCALE
+        value: fr
+      - key: N8N_ENCRYPTION_KEY
+        generateValue: true
+      - key: WEBHOOK_URL
+        sync: false
+      - key: EXECUTIONS_MODE
+        value: queue
+      - key: QUEUE_BULL_REDIS_HOST
+        fromService:
+          name: redis
+          type: redis
+          property: host
+      - key: QUEUE_BULL_REDIS_PORT
+        fromService:
+          name: redis
+          type: redis
+          property: port
+
+  - type: web
+    name: n8n-worker
+    env: docker
+    region: frankfurt # optional (defaults to oregon)
+    plan: starter # optional (defaults to starter)
+    branch: main # optional (defaults to master)
+    numInstances: 1
+    healthCheckPath: /healthz
+    dockerCommand: "n8n worker"
+    envVars:
+      - key: DB_TYPE
+        value: postgresdb
+      - key: DB_POSTGRESDB_HOST
+        fromDatabase:
+          name: n8nDB
+          property: host
+      - key: DB_POSTGRESDB_DATABASE
+        fromDatabase:
+          name: n8nDB
+          property: database
+      - key: DB_POSTGRESDB_PORT
+        fromDatabase:
+          name: n8nDB
+          property: port
+      - key: DB_POSTGRESDB_USER
+        fromDatabase:
+          name: n8nDB
+          property: user
+      - key: DB_POSTGRESDB_PASSWORD
+        fromDatabase:
+          name: n8nDB
+          property: password
+      - key: PORT
+        value: 5678
+      - key: N8N_LOG_LEVEL
+        value: info
+      - key: GENERIC_TIMEZONE
+        value: Europe/Paris
+      - key: TZ
+        value: Europe/Paris
+      - key: N8N_DEFAULT_LOCALE
+        value: fr
+      - key: QUEUE_HEALTH_CHECK_ACTIVE
+        value: true
+      - key: QUEUE_HEALTH_CHECK_PORT
+        value: 5678
+      - key: N8N_ENCRYPTION_KEY
+        fromService:
+          name: n8n
+          type: web
+          envVarKey: N8N_ENCRYPTION_KEY
+      - key: EXECUTIONS_MODE
+        value: queue
+      - key: QUEUE_BULL_REDIS_HOST
+        fromService:
+          name: redis
+          type: redis
+          property: host
+      - key: QUEUE_BULL_REDIS_PORT
+        fromService:
+          name: redis
+          type: redis
+          property: port
+
+  - type: redis
+    name: redis
+    region: frankfurt # optional (defaults to oregon)
+    plan: free # choose appropriate plan based on your need
+    ipAllowList: # allow external connections from everywhere
+    - source: 0.0.0.0/0
+      description: everywhere
+
+databases:
+  - name: n8nDB
+    region: frankfurt # optional (defaults to oregon)
+    plan: starter
