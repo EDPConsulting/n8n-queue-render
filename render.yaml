@@ -132,4 +132,5 @@ services:
 databases:
   - name: n8nDB
     region: frankfurt # optional (defaults to oregon)
-    plan: starter
+    plan: basic-256mb
+
