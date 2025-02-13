@@ -6,7 +6,15 @@ services:
     plan: free # optional (defaults to starter)
     branch: main # optional (defaults to master)
     numInstances: 1
-    healthCheckPath: /healthz
+
+    # Instead of `healthCheckPath: /healthz`, use the `healthCheck` object:
+    healthCheck:
+      path: /healthz           # Endpoint to check
+      intervalSeconds: 15      # How often to run the check
+      timeoutSeconds: 15       # How long to wait for a response before failing
+      healthyThreshold: 1      # How many successes in a row to be "healthy"
+      unhealthyThreshold: 3    # How many consecutive failures to be "unhealthy"
+
     envVars:
       - key: DB_TYPE
         value: postgresdb
@@ -60,12 +68,20 @@ services:
   - type: web
     name: n8n-worker
     env: docker
-    region: frankfurt # optional (defaults to oregon)
-    plan: starter # optional (defaults to starter)
-    branch: main # optional (defaults to master)
+    region: frankfurt
+    plan: starter
+    branch: main
     numInstances: 1
-    healthCheckPath: /healthz
     dockerCommand: "n8n worker"
+
+    # Again, define a full healthCheck instead of `healthCheckPath`
+    healthCheck:
+      path: /healthz
+      intervalSeconds: 15
+      timeoutSeconds: 15
+      healthyThreshold: 1
+      unhealthyThreshold: 3
+
     envVars:
       - key: DB_TYPE
         value: postgresdb
@@ -123,14 +139,13 @@ services:
 
   - type: redis
     name: redis
-    region: frankfurt # optional (defaults to oregon)
-    plan: free # choose appropriate plan based on your need
-    ipAllowList: # allow external connections from everywhere
-    - source: 0.0.0.0/0
-      description: everywhere
+    region: frankfurt
+    plan: free
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
 
 databases:
   - name: n8nDB
-    region: frankfurt # optional (defaults to oregon)
+    region: frankfurt
     plan: basic-256mb
-
