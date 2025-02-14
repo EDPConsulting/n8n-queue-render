@@ -1,80 +1,79 @@
+# services:
+#   - type: web
+#     name: n8n
+#     env: docker
+#     region: frankfurt # optional (defaults to oregon)
+#     plan: free # optional (defaults to starter)
+#     branch: main # optional (defaults to master)
+#     numInstances: 1
+
+#     healthCheck:
+#       path: /healthz
+#       intervalSeconds: 15
+#       timeoutSeconds: 15
+#       healthyThreshold: 1
+#       unhealthyThreshold: 3
+
+#     envVars:
+#       - key: DB_TYPE
+#         value: postgresdb
+#       - key: DB_POSTGRESDB_HOST
+#         fromDatabase:
+#           name: n8nDB
+#           property: host
+#       - key: DB_POSTGRESDB_DATABASE
+#         fromDatabase:
+#           name: n8nDB
+#           property: database
+#       - key: DB_POSTGRESDB_PORT
+#         fromDatabase:
+#           name: n8nDB
+#           property: port
+#       - key: DB_POSTGRESDB_USER
+#         fromDatabase:
+#           name: n8nDB
+#           property: user
+#       - key: DB_POSTGRESDB_PASSWORD
+#         fromDatabase:
+#           name: n8nDB
+#           property: password
+#       - key: PORT
+#         value: 5678
+#       - key: N8N_LOG_LEVEL
+#         value: info
+#       - key: GENERIC_TIMEZONE
+#         value: Europe/Paris
+#       - key: TZ
+#         value: Europe/Paris
+#       - key: N8N_DEFAULT_LOCALE
+#         value: fr
+#       - key: N8N_ENCRYPTION_KEY
+#         generateValue: true
+#       - key: WEBHOOK_URL
+#         sync: false
+#       - key: EXECUTIONS_MODE
+#         value: queue
+#       - key: QUEUE_BULL_REDIS_HOST
+#         fromService:
+#           name: redis
+#           type: redis
+#           property: host
+#       - key: QUEUE_BULL_REDIS_PORT
+#         fromService:
+#           name: redis
+#           type: redis
+#           property: port
+
 services:
-  - type: web
-    name: n8n
-    env: docker
-    region: frankfurt # optional (defaults to oregon)
-    plan: free # optional (defaults to starter)
-    branch: main # optional (defaults to master)
-    numInstances: 1
-
-    # Instead of `healthCheckPath: /healthz`, use the `healthCheck` object:
-    healthCheck:
-      path: /healthz           # Endpoint to check
-      intervalSeconds: 15      # How often to run the check
-      timeoutSeconds: 15       # How long to wait for a response before failing
-      healthyThreshold: 1      # How many successes in a row to be "healthy"
-      unhealthyThreshold: 3    # How many consecutive failures to be "unhealthy"
-
-    envVars:
-      - key: DB_TYPE
-        value: postgresdb
-      - key: DB_POSTGRESDB_HOST
-        fromDatabase:
-          name: n8nDB
-          property: host
-      - key: DB_POSTGRESDB_DATABASE
-        fromDatabase:
-          name: n8nDB
-          property: database
-      - key: DB_POSTGRESDB_PORT
-        fromDatabase:
-          name: n8nDB
-          property: port
-      - key: DB_POSTGRESDB_USER
-        fromDatabase:
-          name: n8nDB
-          property: user
-      - key: DB_POSTGRESDB_PASSWORD
-        fromDatabase:
-          name: n8nDB
-          property: password
-      - key: PORT
-        value: 5678
-      - key: N8N_LOG_LEVEL
-        value: info
-      - key: GENERIC_TIMEZONE
-        value: Europe/Paris
-      - key: TZ
-        value: Europe/Paris
-      - key: N8N_DEFAULT_LOCALE
-        value: fr
-      - key: N8N_ENCRYPTION_KEY
-        generateValue: true
-      - key: WEBHOOK_URL
-        sync: false
-      - key: EXECUTIONS_MODE
-        value: queue
-      - key: QUEUE_BULL_REDIS_HOST
-        fromService:
-          name: redis
-          type: redis
-          property: host
-      - key: QUEUE_BULL_REDIS_PORT
-        fromService:
-          name: redis
-          type: redis
-          property: port
-
   - type: web
     name: n8n-worker
     env: docker
     region: frankfurt
-    plan: starter
+    plan: pro
     branch: main
     numInstances: 1
     dockerCommand: "n8n worker"
 
-    # Again, define a full healthCheck instead of `healthCheckPath`
     healthCheck:
       path: /healthz
       intervalSeconds: 15
@@ -83,6 +82,8 @@ services:
       unhealthyThreshold: 3
 
     envVars:
+      - key: N8N_CONCURRENCY_PRODUCTION_LIMIT
+        value: 5
       - key: DB_TYPE
         value: postgresdb
       - key: DB_POSTGRESDB_HOST
@@ -137,15 +138,15 @@ services:
           type: redis
           property: port
 
-  - type: redis
-    name: redis
-    region: frankfurt
-    plan: free
-    ipAllowList:
-      - source: 0.0.0.0/0
-        description: everywhere
+#  - type: redis
+#    name: redis
+#    region: frankfurt
+#    plan: free
+#    ipAllowList:
+#      - source: 0.0.0.0/0
+#        description: everywhere
 
-databases:
-  - name: n8nDB
-    region: frankfurt
-    plan: basic-256mb
+# databases:
+#   - name: n8nDB
+#     region: frankfurt
+#     plan: basic-256mb
