@@ -74,16 +74,17 @@ services:
     numInstances: 1
     dockerCommand: "n8n worker"
 
-    healthCheck:
-      path: /healthz
-      intervalSeconds: 15
-      timeoutSeconds: 15
-      healthyThreshold: 1
-      unhealthyThreshold: 3
+    # older, flat health-check fields:
+    healthCheckPath: /healthz
+    healthCheckIntervalSeconds: 15
+    healthCheckTimeoutSeconds: 15
+    healthCheckFailureThreshold: 3
+    healthCheckSuccessThreshold: 1
 
     envVars:
       - key: N8N_CONCURRENCY_PRODUCTION_LIMIT
         value: 5
+
       - key: DB_TYPE
         value: postgresdb
       - key: DB_POSTGRESDB_HOST
@@ -106,6 +107,7 @@ services:
         fromDatabase:
           name: n8nDB
           property: password
+
       - key: PORT
         value: 5678
       - key: N8N_LOG_LEVEL
