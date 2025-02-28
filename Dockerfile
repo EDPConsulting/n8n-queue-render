@@ -4,7 +4,7 @@ FROM n8nio/n8n:latest
 USER root
 
 # Install html-to-docx globally (npm is available in the base image).
-RUN npm install --location=global html-to-docx
+RUN npm install --location=global docx
 
 # Switch back to n8n user
 USER node
