@@ -1,4 +1,4 @@
-FROM n8nio/n8n:latest
+FROM n8nio/n8n:node18
 
 # Switch to root user so we can install packages globally
 USER root
