@@ -5,7 +5,7 @@ USER root
 
 # Install html-to-docx globally (npm is available in the base image).
 RUN npm install --location=global docx
-RUN npm install --location=global @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
+RUN npm install --location=global aws4
 
 # Switch back to n8n user
 USER node
